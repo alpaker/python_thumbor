@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(name = 'python_thumbor',
       version = "1",
-      description = 'Python Thumbor client',
+      description = 'Python Thumbor Client',
       author = 'Alp Aker',
       author_email = 'alp.tekin.aker@gmail.com',
       url = 'https://github.com/food52/python_thumbor',
