@@ -4,6 +4,8 @@ from base64 import b64encode
 import hmac
 import hashlib
 
+from Crypto.Cipher import AES
+
 class Client(object):
 
     def __init__(self, key=None):
@@ -22,25 +24,26 @@ class Client(object):
         if key is None:
             signature = "unsafe"
         else:
-            binhash = hmac.new(self._key, options_path, hashlib.sha1).digest()
-            signature = self._base64_safe(binhash)
+            hashed_path = hmac.new(self._key, options_path, hashlib.sha1).digest()
+            signature = self._base64_safe(hashed_path)
         components = [signature] + options_components
         return '/'.join(components)
     
 class OldClient(Client):
 
     def __init__(self, key):
-        super(Client, self).__init__(key)
-        self._padded_key = (self._key * 16)[0..15]
+        padded_key = (key * 16)[0..15]
+        self._encryptor = AES.new(padded_key, AES.MODE_EBC)
 
     def path(self, options):
         options_components = _options_to_path_components(options)
-        m = hashlib.md5()
-        m.update(options['image'])
-        options_components.append(m.digest())
+        hasher = hashlib.md5()
+        hasher.update(options['image'])
+        options_components.append(hasher.digest())
         options_path = '/'.join(options_components)
         padded_path = options_path + ("{" * (16 - len(options_path_ % )))
-        signature = self._base64_safe(self.encode(padded_path))
+        cyphertext = self._encryptor.encrypt(padded_path)
+        signature = self._base64_safe(cyphertext)
         components = [signature, options['image']]
         return '/'.join(components)
         
