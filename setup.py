@@ -3,7 +3,7 @@
 from setuptools import setup
 
 setup(name = 'python_thumbor',
-      version = "1",
+      version = "0.0",
       description = 'Python Thumbor Client',
       author = 'Alp Aker',
       author_email = 'alp.tekin.aker@gmail.com',
