@@ -7,5 +7,6 @@ setup(name = 'python_thumbor',
       description = 'Python Thumbor client',
       author = 'Alp Aker',
       author_email = 'alp.tekin.aker@gmail.com',
+      url = 'https://github.com/food52/python_thumbor',
       py_modules = ['python_thumbor'],
       zip_safe = False)
