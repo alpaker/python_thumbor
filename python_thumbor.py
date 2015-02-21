@@ -92,7 +92,7 @@ class Client(object):
 
         if w and flip:
             w *= -1
-        if height and flop:
+        if h and flop:
             h *= -1
 
         if w or h:
