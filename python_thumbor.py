@@ -42,7 +42,7 @@ class Client(object):
 
         crop_dims = self._get_crop_dims(options)
         if any(x > 0 for x in crop_dims):
-            parts.append("x".join(crop_dims))
+            parts.append("%dx%d:%dx%d" % tuple(crop_dims))
 
         for opt in self.FIT_OPTS:
             if options[opt]:
