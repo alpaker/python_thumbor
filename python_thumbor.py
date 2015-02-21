@@ -3,6 +3,7 @@
 from base64 import b64encode
 import hmac
 import hashlib
+import re
 
 from Crypto.Cipher import AES
 
@@ -15,7 +16,7 @@ class Client(object):
         return ''
 
     def _base64_safe(self, s):
-        return s
+        return b64encode(s).replace('+', '-').replace('/', '_').replace('\n', '')
     
     def path(self, options):
         options_components = _options_to_path_components(options)
