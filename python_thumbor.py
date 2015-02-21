@@ -51,7 +51,7 @@ class Client(object):
             except (TypeError, IndexError):
                 has_args = False
             if has_args:
-                opts.append(trim)
+                opts.append(':'.join(str(e) for e in trim))
             parts.append(':'.join(opts))
 
         if options.get('meta', False):
