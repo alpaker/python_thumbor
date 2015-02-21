@@ -137,7 +137,7 @@ class Client(object):
 
             return [0, top, ow, bottom]
         elif new_ratio < o_ratio:
-            new_w = round(new_ration * oh)
+            new_w = round(new_ratio * oh)
             left = round(xc - 0.5*new_w)
             right = round(xc + 0.5*new_w)
 
