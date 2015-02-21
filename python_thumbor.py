@@ -151,7 +151,7 @@ class Client(object):
 
     def path(self, options):
         self._validate_options(options)
-        options_components = _options_to_path_components(options)
+        options_components = self._options_to_path_components(options)
         options_components.append(options['image'])
         options_path = '/'.join(options_components)
         if key is None:
@@ -170,7 +170,7 @@ class OldClient(Client):
 
     def path(self, options):
         self._validate_options(options)
-        options_components = _options_to_path_components(options)
+        options_components = self._options_to_path_components(options)
         hasher = hashlib.md5()
         hasher.update(options['image'])
         options_components.append(hasher.digest())
