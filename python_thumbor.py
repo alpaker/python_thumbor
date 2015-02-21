@@ -69,6 +69,30 @@ class Client(object):
 
         return parts
 
+    def _get_image_dims(self, options):
+        w, h = options['width'], options['height']
+        flip, flop = options['flip'], options['flop']
+
+        if w and flip:
+            w *= -1
+        if height and flop:
+            h *= -1
+
+        if w or h:
+            if not w: w = 0
+            if not h: h = 0
+        else:
+            if flip:
+                w = "-0"
+                if not flop:
+                    h = "0"
+            if flop:
+                h = "-0"
+                if not flip:
+                    w = "0"
+
+        return str(w or ''), str(h or '')
+
     def path(self, options):
         options_components = _options_to_path_components(options)
         options_components.append(options['image'])
