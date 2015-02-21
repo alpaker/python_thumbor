@@ -161,6 +161,6 @@ class OldClient(Client):
         options_path = '/'.join(options_components)
         padded_path = options_path + ("{" * (16 - len(options_path) % 16))
         cyphertext = self._encryptor.encrypt(padded_path)
-        signature = self._base64_safe(cyphertext)
-        components = [signature, options['image']]
+        b64 = self._base64_safe(cyphertext)
+        components = [b64, options['image']]
         return '/'.join(components)
