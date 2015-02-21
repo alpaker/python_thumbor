@@ -151,15 +151,15 @@ class Client(object):
 
     def path(self, options):
         self._validate_options(options)
-        options_components = self._options_to_path_components(options)
-        options_components.append(options['image'])
-        options_path = '/'.join(options_components)
+        components = self._options_to_path_components(options)
+        components.append(options['image'])
+        path = '/'.join(components)
         if self._key is None:
             signature = "unsafe"
         else:
-            hashed_path = hmac.new(self._key, options_path, hashlib.sha1).digest()
+            hashed_path = hmac.new(self._key, path, hashlib.sha1).digest()
             signature = self._base64_safe(hashed_path)
-        components = [signature] + options_components
+        components = [signature] + components
         return '/'.join(components)
 
 class OldClient(Client):
@@ -170,12 +170,12 @@ class OldClient(Client):
 
     def path(self, options):
         self._validate_options(options)
-        options_components = self._options_to_path_components(options)
+        components = self._options_to_path_components(options)
         hasher = hashlib.md5()
         hasher.update(options['image'])
-        options_components.append(hasher.digest())
-        options_path = '/'.join(options_components)
-        padded_path = options_path + ("{" * (16 - len(options_path) % 16))
+        components.append(hasher.digest())
+        path = '/'.join(components)
+        padded_path = path + ("{" * (16 - len(path) % 16))
         cyphertext = self._encryptor.encrypt(padded_path)
         b64 = self._base64_safe(cyphertext)
         components = [b64, options['image']]
