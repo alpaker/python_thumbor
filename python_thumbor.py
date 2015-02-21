@@ -22,9 +22,9 @@ class Client(object):
     def _validate_options(self, options):
         c = options['center']
         if not isinstance(c, list):
-            raise TypeError('Center must be a list of two coordinates.')
+            raise TypeError('Center must be a list of coordinates.')
         if len(c) != 2:
-            raise ValueError('Center must be a list of two coordinates.')
+            raise ValueError('Center must contain two coordinates.')
 
         if 'image' not in options:
             raise ValueError('Image filename is required.')
