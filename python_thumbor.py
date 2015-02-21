@@ -93,6 +93,48 @@ class Client(object):
 
         return str(w or ''), str(h or '')
 
+    def _get_crop_dims(self, options):
+        w, h = options['width'], options['height']
+        ow, oh = options['original_width'], options['original_height']
+        c = options['center']
+
+        if not ((w or h) and ow and oh and c):
+            return [0] * 4
+
+        xc, yc = c
+        w, h = abs(w or ow), abs(h or oh)
+        new_ratio = w / float(h)
+        o_ratio = ow / float(oh)
+
+        if o_ratio < new_ratio:
+            new_h = round(new_ratio * ow)
+            top = round(yc - 0.5*new_h)
+            bottom = round(yc + 0.5*new_h)
+
+            if top < 0:
+                top = 0
+                bottom = new_h
+            elif oh < bottom:
+                top = oh - new_h
+                bottom = oh
+
+            return [0, top, ow, bottom]
+        elif new_ratio < o_ratio:
+            new_w = round(new_ration * oh)
+            left = round(xc - 0.5*new_w)
+            right = round(xc + 0.5*new_w)
+
+            if left < 0:
+                left = 0
+                right = new_w
+            elif ow < right:
+                left = ow - new_w
+                rigth = ow
+
+            return [left, 0, right, oh]
+        else:
+            return [0] * 4
+
     def path(self, options):
         options_components = _options_to_path_components(options)
         options_components.append(options['image'])
