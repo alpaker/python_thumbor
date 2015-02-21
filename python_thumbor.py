@@ -19,6 +19,20 @@ class Client(object):
     def __init__(self, key=None):
         self._key = key
 
+    def _validate_options(self, options):
+        c = options['center']
+        if not isinstance(c, list):
+            raise TypeError('Center must be a list of two coordinates.')
+        if len(c) != 2:
+            raise ValueError('Center must be a list of two coordinates.')
+
+        if 'image' not in options:
+            raise ValueError('Image filename is required.')
+
+        if ('fit_in' in options or 'full_fit_in' in options) and \
+           not ('width' in options or 'height' in options):
+            raise ValueError("Options 'fit_in' and 'full_fit_in' require 'width' or 'height'.")
+
     def _base64_safe(self, s):
         return b64encode(s).replace('+', '-').replace('/', '_').replace('\n', '')
 
@@ -136,6 +150,7 @@ class Client(object):
             return [0] * 4
 
     def path(self, options):
+        self._validate_options(options)
         options_components = _options_to_path_components(options)
         options_components.append(options['image'])
         options_path = '/'.join(options_components)
@@ -154,6 +169,7 @@ class OldClient(Client):
         self._encryptor = AES.new(padded_key, AES.MODE_EBC)
 
     def path(self, options):
+        self._validate_options(options)
         options_components = _options_to_path_components(options)
         hasher = hashlib.md5()
         hasher.update(options['image'])
