@@ -55,7 +55,7 @@ class Client(object):
             parts.append(':'.join(opts))
 
         if options.get('meta', False):
-            parts.append(options['meta'])
+            parts.append('meta')
 
         crop_dims = self._get_crop_dims(options)
         if any(x > 0 for x in crop_dims):
