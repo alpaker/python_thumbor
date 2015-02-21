@@ -96,8 +96,8 @@ class Client(object):
             h *= -1
 
         if w or h:
-            if not w: w = 0
-            if not h: h = 0
+            if not w: w = "0"
+            if not h: h = "0"
         else:
             if flip:
                 w = "-0"
