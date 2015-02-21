@@ -154,7 +154,7 @@ class Client(object):
         options_components = self._options_to_path_components(options)
         options_components.append(options['image'])
         options_path = '/'.join(options_components)
-        if key is None:
+        if self._key is None:
             signature = "unsafe"
         else:
             hashed_path = hmac.new(self._key, options_path, hashlib.sha1).digest()
