@@ -159,7 +159,7 @@ class OldClient(Client):
         hasher.update(options['image'])
         options_components.append(hasher.digest())
         options_path = '/'.join(options_components)
-        padded_path = options_path + ("{" * (16 - len(options_path_ % )))
+        padded_path = options_path + ("{" * (16 - len(options_path) % 16))
         cyphertext = self._encryptor.encrypt(padded_path)
         signature = self._base64_safe(cyphertext)
         components = [signature, options['image']]
