@@ -165,7 +165,7 @@ class Client(object):
 class OldClient(Client):
 
     def __init__(self, key):
-        padded_key = (key * 16)[0..15]
+        padded_key = (key * 16)[0:15]
         self._encryptor = AES.new(padded_key, AES.MODE_EBC)
 
     def path(self, options):
