@@ -163,7 +163,7 @@ class Client(object):
             hashed_path = hmac.new(self._key, path, hashlib.sha1).digest()
             signature = self._base64_safe(hashed_path)
         components = [signature] + components
-        return '/'.join(components)
+        return '/' + '/'.join(components)
 
 class OldClient(Client):
 
@@ -182,4 +182,4 @@ class OldClient(Client):
         cyphertext = self._encryptor.encrypt(padded_path)
         b64 = self._base64_safe(cyphertext)
         components = [b64, options['image']]
-        return '/'.join(components)
+        return '/' + '/'.join(components)
