@@ -152,7 +152,7 @@ class Client(object):
         else:
             return [0] * 4
 
-    def path(self, **options):
+    def uri(self, **options):
         self._validate_options(options)
         components = self._options_to_path_components(options)
         components.append(options['image'])
@@ -171,7 +171,7 @@ class OldClient(Client):
         padded_key = (key * 16)[0:15]
         self._encryptor = AES.new(padded_key, AES.MODE_EBC)
 
-    def path(self, options):
+    def uri(self, options):
         self._validate_options(options)
         components = self._options_to_path_components(options)
         hasher = hashlib.md5()
