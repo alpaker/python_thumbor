@@ -20,11 +20,14 @@ class Client(object):
         self._key = key
 
     def _validate_options(self, options):
-        c = options['center']
-        if not isinstance(c, list):
-            raise TypeError('Center must be a list of coordinates.')
-        if len(c) != 2:
-            raise ValueError('Center must contain two coordinates.')
+        try:
+            c = options['center']
+            if not isinstance(c, list):
+                raise TypeError('Center must be a list of coordinates.')
+            if len(c) != 2:
+                raise ValueError('Center must contain two coordinates.')
+        except KeyError:
+            pass
 
         if 'image' not in options:
             raise ValueError('Image filename is required.')
@@ -39,7 +42,7 @@ class Client(object):
     def _options_to_path_components(self, options):
         parts = list()
 
-        trim = options['trim']
+        trim = options.get('trim', False)
         if trim:
             opts = ['trim']
             try:
@@ -51,7 +54,7 @@ class Client(object):
                 opts.append(trim)
             parts.append(':'.join(opts))
 
-        if options['meta']:
+        if options.get('meta', False):
             parts.append(options['meta'])
 
         crop_dims = self._get_crop_dims(options)
@@ -59,33 +62,33 @@ class Client(object):
             parts.append("%dx%d:%dx%d" % tuple(crop_dims))
 
         for opt in self.FIT_OPTS:
-            if options[opt]:
+            if options.get(opt, False):
                 parts.append(opt.replace('_', '-'))
 
         image_dims = self._get_image_dims(options)
         if any(image_dims):
             parts.append('x'.join(image_dims))
 
-        halign = options['halign']
+        halign = options.get('halign', False)
         if halign and halign != 'center':
             parts.append(halign)
 
-        valign = options['valign']
+        valign = options.get('valign', False)
         if valign and valign != 'middle':
             parts.append(valign)
 
-        if options['smart']:
+        if options.get('smart', False):
             parts.append('smart')
 
-        filters = options['filters']
+        filters = options.get('filters', False)
         if filters:
             parts.append('filters:' + ':'.join(filters))
 
         return parts
 
     def _get_image_dims(self, options):
-        w, h = options['width'], options['height']
-        flip, flop = options['flip'], options['flop']
+        w, h = options.get('width', None), options.get('height', None)
+        flip, flop = options.get('flip', None), options.get('flop', None)
 
         if w and flip:
             w *= -1
@@ -108,9 +111,9 @@ class Client(object):
         return str(w or ''), str(h or '')
 
     def _get_crop_dims(self, options):
-        w, h = options['width'], options['height']
-        ow, oh = options['original_width'], options['original_height']
-        c = options['center']
+        w, h = options.get('width', None), options.get('height', None)
+        ow, oh = options.get('original_width', None), options.get('original_height', None)
+        c = options.get('center', None)
 
         if not ((w or h) and ow and oh and c):
             return [0] * 4
@@ -149,7 +152,7 @@ class Client(object):
         else:
             return [0] * 4
 
-    def path(self, options):
+    def path(self, **options):
         self._validate_options(options)
         components = self._options_to_path_components(options)
         components.append(options['image'])
