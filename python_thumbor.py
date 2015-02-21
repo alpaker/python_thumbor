@@ -9,15 +9,66 @@ from Crypto.Cipher import AES
 
 class Client(object):
 
+    FIT_OPTS = [
+        'fit_in',
+        'adaptive_fit_in',
+        'full_fit_in',
+        'adaptive_full_fit_in'
+    ]
+
     def __init__(self, key=None):
         self._key = key
 
-    def _options_to_path_components(self, options):
-        return ''
-
     def _base64_safe(self, s):
         return b64encode(s).replace('+', '-').replace('/', '_').replace('\n', '')
-    
+
+    def _options_to_path_components(self, options):
+        parts = list()
+
+        trim = options['trim']
+        if trim:
+            opts = ['trim']
+            try:
+                # We need the object identity test here.
+                has_args = not (trim is True or trim[0] is True)
+            except (TypeError, IndexError):
+                has_args = False
+            if has_args:
+                opts.append(trim)
+            parts.append(':'.join(opts))
+
+        if options['meta']:
+            parts.append(options['meta'])
+
+        crop_dims = self._get_crop_dims(options)
+        if any(lambda x: x > 0, crop_dims):
+            parts.append("x".join(crop_dims))
+
+        for opt in self.FIT_OPTS:
+            if options[opt]:
+                parts.append(opt.replace('_', '-'))
+
+        image_dims = self._get_image_dims(options)
+        if any(image_dims):
+            parts.append('x'.join(image_dims))
+
+        halign = options['halign']
+        if halign and halign != 'center':
+            parts.append(halign)
+
+        valign = options['valign']
+        if valign and valign != 'middle':
+            parts.append(valign)
+
+        if options['smart']:
+            parts.append('smart')
+
+        filters = options['filters']
+        if filters:
+            parts.append('filters:' + ':'.join(filters))
+
+        return parts
+
     def path(self, options):
         options_components = _options_to_path_components(options)
         options_components.append(options['image'])
@@ -29,7 +80,7 @@ class Client(object):
             signature = self._base64_safe(hashed_path)
         components = [signature] + options_components
         return '/'.join(components)
-    
+
 class OldClient(Client):
 
     def __init__(self, key):
@@ -47,7 +98,3 @@ class OldClient(Client):
         signature = self._base64_safe(cyphertext)
         components = [signature, options['image']]
         return '/'.join(components)
-        
-
-
-
