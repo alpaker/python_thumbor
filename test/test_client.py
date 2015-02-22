@@ -79,14 +79,99 @@ class ClientTest(unittest.TestCase):
     def test_meta(self):
         u = self.client.uri(image=IMAGE_URI, meta=True)
         self.assertEqual(u, "/WvIJFDJDePgIl5hZcLgtrzIPxfY=/meta/my.domain.com/some/image/url.jpg")
-                         
+
+    def test_crop(self):
+        u = self.client.uri(image=IMAGE_URI, width=150, height=150,
+                            original_width=300, original_height=200,
+                            center=[100,100])
+        self.assertEqual(u, "/KzLuf69nu6UIBIKuBRiIneiaQe8=/0x0:200x200/150x150/my.domain.com/some/image/url.jpg")
+
+    def test_halign_valign_smart(self):
+        u = self.client.uri(image=IMAGE_URI, halign='left', valign='top', smart=True)
+        self.assertEqual(u, "/KS6mVuzlGE3hJ75n3JUonfGgSFM=/left/top/smart/my.domain.com/some/image/url.jpg")
+
+    def test_empty_filters(self):
+        u = self.client.uri(image=IMAGE_URI, filters=[])
+        self.assertEqual(u, "/964rCTkAEDtvjy_a572k7kRa0SU=/my.domain.com/some/image/url.jpg")
+
+    def test_trim_no_param(self):
+        u = self.client.uri(image=IMAGE_URI, trim=True)
+        self.assertEqual(u, "/w23BC0dUiYBFrUnuoYJe8XROuyw=/trim/my.domain.com/some/image/url.jpg")
+
+    def test_trim_direction_param(self):
+        u = self.client.uri(image=IMAGE_URI, trim=['bottom-right'])
+        self.assertEqual(u, "/kXPwSmqEvPFQezgzBCv9BtPWmBY=/trim:bottom-right/my.domain.com/some/image/url.jpg")
+
+    def test_trim_direction_and_tolerance_param(self):
+        u = self.client.uri(image=IMAGE_URI, trim=['bottom-right', 15])
+        self.assertEqual(u, "/TUCEIhtWfI1Uv9zjavCSl_i0A_8=/trim:bottom-right:15/my.domain.com/some/image/url.jpg")
+
+    def test_trim_smart(self):
+        u = self.client.uri(image=IMAGE_URI, trim=True, smart=True)
+        self.assertEqual(u, "/qvDxNvUzB-0805ufJrLaFNdz2R0=/trim/smart/my.domain.com/some/image/url.jpg")
+
+    def test_horizontal_crop_with_left_center(self):
+        u = self.client.uri(image=IMAGE_URI, original_height=100, height=50,
+                            original_width=100, width=40, center=[0,50])
+        self.assertEqual(u, "/SZIT3w4Qgebv5DuVJ8G1IH1mkCU=/0x0:80x100/40x50/my.domain.com/some/image/url.jpg")
+
+    def test_horizontal_crop_with_left_center(self):
+        u = self.client.uri(image=IMAGE_URI, original_height=100, height=50,
+                            original_width=100, width=40, center=[100,50])
+        self.assertEqual(u, "/NEtCYehaISE7qR3zFj15CxnZoCs=/20x0:100x100/40x50/my.domain.com/some/image/url.jpg")
+
+    def test_horizontal_crop_with_actual_center(self):
+        u = self.client.uri(image=IMAGE_URI, original_height=100, height=50,
+                            original_width=100, width=40, center=[50,50])
+        self.assertEqual(u, "/JLH65vJTu6d-cXBmqe5hYoSD4ho=/10x0:90x100/40x50/my.domain.com/some/image/url.jpg")
+
+    def test_vertical_crop_with_top_center(self):
+        u = self.client.uri(image=IMAGE_URI, original_height=100, height=50,
+                            original_width=100, width=40, center=[50,0])
+        self.assertEqual(u, "/JLH65vJTu6d-cXBmqe5hYoSD4ho=/10x0:90x100/40x50/my.domain.com/some/image/url.jpg")
+
+    def test_vertical_crop_with_bottom_center(self):
+        u = self.client.uri(image=IMAGE_URI, original_height=100, height=50,
+                            original_width=100, width=40, center=[50,100])
+        self.assertEqual(u, "/JLH65vJTu6d-cXBmqe5hYoSD4ho=/10x0:90x100/40x50/my.domain.com/some/image/url.jpg")
+
+    def test_vertical_crop_with_actual_center(self):
+        u = self.client.uri(image=IMAGE_URI, original_height=100, height=50,
+                            original_width=100, width=40, center=[50,50])
+        self.assertEqual(u, "/JLH65vJTu6d-cXBmqe5hYoSD4ho=/10x0:90x100/40x50/my.domain.com/some/image/url.jpg")
+
+    def test_no_crop_when_not_needed(self):
+        u = self.client.uri(image=IMAGE_URI, original_height=100, height=50,
+                            original_width=100, width=50, center=[50,0])
+        self.assertEqual(u, "/trIjfr513nkGkCpKXK6qgox2jPA=/50x50/my.domain.com/some/image/url.jpg")
+
+    def test_no_crop_when_missing_orig_height(self):
+        u = self.client.uri(image=IMAGE_URI, height=40,
+                            original_width=100, width=50, center=[50,50])
+        self.assertEqual(u, "/veYlY0msKmemAaXpeav2kCNftmU=/50x40/my.domain.com/some/image/url.jpg")
+
+    def test_no_crop_when_missing_orig_weight(self):
+        u = self.client.uri(image=IMAGE_URI, height=40,
+                            original_height=100, width=50, center=[50,50])
+        self.assertEqual(u, "/veYlY0msKmemAaXpeav2kCNftmU=/50x40/my.domain.com/some/image/url.jpg")
+
+    def test_no_crop_when_missing_width_height(self):
+        u = self.client.uri(image=IMAGE_URI, original_width=100,
+                            original_height=100, center=[50,50])
+        self.assertEqual(u, "/964rCTkAEDtvjy_a572k7kRa0SU=/my.domain.com/some/image/url.jpg")
+
+    def test_crop_missing_width(self):
+        u = self.client.uri(image=IMAGE_URI, original_width=100, height=80,
+                            original_height=100, center=[50,50])
+        self.assertEqual(u, "/02BNIIJ9NYNV9Q03JHPtlP0DIDg=/0x10:100x90/0x80/my.domain.com/some/image/url.jpg")
+
 
 class OldClientTest(unittest.TestCase):
 
     def setUp(self):
         self.client = OldClient(KEY)
 
-    
+
 if __name__ == "__main__":
 
     unittest.main()
