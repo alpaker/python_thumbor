@@ -185,6 +185,16 @@ class ClientTest(unittest.TestCase):
                             height=-40, original_height=100, center=[50,50])
         self.assertEqual(u, "/lfjGLTTEaW_Rcvc1q0ZhfYup2jg=/0x10:100x90/-50x-40/my.domain.com/some/image/url.jpg")
 
+    def test_validate_center_option(self):
+        self.assertRaises(TypeError, self.client.uri, center=True)
+        self.assertRaises(ValueError, self.client.uri, center=[0])
+
+    def test_validate_image(self):
+        self.assertRaises(ValueError, self.client.uri, width=100, height=100)
+
+    def test_validate_fit_options(self):
+        self.assertRaises(ValueError, self.client.uri, fit_in=True)
+
 class OldClientTest(unittest.TestCase):
 
     def setUp(self):
