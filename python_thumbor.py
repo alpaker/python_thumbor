@@ -90,10 +90,8 @@ class Client(object):
         w, h = options.get('width', None), options.get('height', None)
         flip, flop = options.get('flip', None), options.get('flop', None)
 
-        if w and flip:
-            w *= -1
-        if h and flop:
-            h *= -1
+        if w and flip: w *= -1
+        if h and flop: h *= -1
 
         if w or h:
             if not w: w = "0"
@@ -101,12 +99,10 @@ class Client(object):
         else:
             if flip:
                 w = "-0"
-                if not flop:
-                    h = "0"
+                if not flop: h = "0"
             if flop:
                 h = "-0"
-                if not flip:
-                    w = "0"
+                if not flip: w = "0"
 
         return str(w or ''), str(h or '')
 
