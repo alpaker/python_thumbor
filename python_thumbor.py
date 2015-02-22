@@ -124,7 +124,7 @@ class Client(object):
         o_ratio = ow / float(oh)
 
         if o_ratio < new_ratio:
-            new_h = round(new_ratio * ow)
+            new_h = round(ow / new_ratio)
             top = round(yc - 0.5*new_h)
             bottom = round(yc + 0.5*new_h)
 
@@ -146,7 +146,7 @@ class Client(object):
                 right = new_w
             elif ow < right:
                 left = ow - new_w
-                rigth = ow
+                right = ow
 
             return [left, 0, right, oh]
         else:
