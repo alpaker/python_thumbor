@@ -18,14 +18,11 @@ class ClientTest(unittest.TestCase):
         self.client = Client(KEY)
 
     def test_validate_center_option(self):
-        self.assertRaises(TypeError, self.client.uri, center=True)
-        self.assertRaises(ValueError, self.client.uri, center=[0])
-
-    def test_validate_image(self):
-        self.assertRaises(ValueError, self.client.uri, width=100, height=100)
+        self.assertRaises(TypeError, self.client.uri, IMAGE_URI, center=True)
+        self.assertRaises(ValueError, self.client.uri, IMAGE_URI, center=[0])
 
     def test_validate_fit_options(self):
-        self.assertRaises(ValueError, self.client.uri, fit_in=True)
+        self.assertRaises(ValueError, self.client.uri, IMAGE_URI, fit_in=True)
 
 class OldClientTest(unittest.TestCase):
 
@@ -36,13 +33,12 @@ def make_fn(opts, expected):
     def fn(self):
         actual = self.client.uri(IMAGE_URI, **opts)
         self.assertEquals(expected, actual)
-    return f
+    return fn
 
 for k,v in TEST_DATA.items():
     name = "test_%s" % k
     expected_new, expected_old = v['new'], v['old']
-    opts = v['opts'].copy()
-    opts['image'] = IMAGE_URI
+    opts = v['opts']
     setattr(ClientTest, name, make_fn(opts, expected_new))
     setattr(OldClientTest, name, make_fn(opts, expected_old))
 
