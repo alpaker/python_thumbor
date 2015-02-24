@@ -29,9 +29,6 @@ class Client(object):
         except KeyError:
             pass
 
-        if 'image' not in options:
-            raise ValueError('Image filename is required.')
-
         if ('fit_in' in options or 'full_fit_in' in options) and \
            not ('width' in options or 'height' in options):
             raise ValueError("Options 'fit_in' and 'full_fit_in' require 'width' or 'height'.")
@@ -148,10 +145,10 @@ class Client(object):
         else:
             return [0] * 4
 
-    def uri(self, **options):
+    def uri(self, image, **options):
         self._validate_options(options)
         components = self._options_to_path_components(options)
-        components.append(options['image'])
+        components.append(image)
         path = '/'.join(components)
         if self._key is None:
             signature = "unsafe"
@@ -167,15 +164,15 @@ class OldClient(Client):
         padded_key = (key * 16)[0:16]
         self._encryptor = AES.new(padded_key, AES.MODE_ECB)
 
-    def uri(self, **options):
+    def uri(self, image, **options):
         self._validate_options(options)
         components = self._options_to_path_components(options)
         hasher = hashlib.md5()
-        hasher.update(options['image'])
+        hasher.update(image)
         components.append(hasher.hexdigest())
         path = '/'.join(components)
         padded_path = path + ("{" * (16 - len(path) % 16))
         cyphertext = self._encryptor.encrypt(padded_path)
         b64 = self._base64_safe(cyphertext)
-        components = [b64, options['image']]
+        components = [b64, image]
         return '/' + '/'.join(components)
