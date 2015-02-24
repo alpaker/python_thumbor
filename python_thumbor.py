@@ -167,7 +167,7 @@ class OldClient(Client):
         padded_key = (key * 16)[0:15]
         self._encryptor = AES.new(padded_key, AES.MODE_ECB)
 
-    def uri(self, options):
+    def uri(self, **options):
         self._validate_options(options)
         components = self._options_to_path_components(options)
         hasher = hashlib.md5()
