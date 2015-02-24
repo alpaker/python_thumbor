@@ -35,11 +35,11 @@ def make_fn(opts, expected):
         self.assertEquals(expected, actual)
     return fn
 
-for k,v in TEST_DATA.items():
-    name = "test_%s" % k
-    opts = v['opts']
-    setattr(ClientTest, name, make_fn(opts, v['new']))
-    setattr(OldClientTest, name, make_fn(opts, v['old']))
+for (testcase, data) in TEST_DATA.items():
+    fname = "test_%s" % testcase
+    opts = data['opts']
+    setattr(ClientTest, fname, make_fn(opts, data['new']))
+    setattr(OldClientTest, fname, make_fn(opts, data['old']))
 
 if __name__ == "__main__":
 
