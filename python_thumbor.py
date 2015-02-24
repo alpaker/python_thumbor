@@ -37,7 +37,7 @@ class Client(object):
         return b64encode(s).replace('+', '-').replace('/', '_').replace('\n', '')
 
     def _serialize_options(self, options):
-        parts = list()
+        result = list()
 
         trim = options.get('trim', False)
         if trim:
@@ -49,39 +49,39 @@ class Client(object):
                 has_args = False
             if has_args:
                 opts.append(':'.join(str(e) for e in trim))
-            parts.append(':'.join(opts))
+            result.append(':'.join(opts))
 
         if options.get('meta', False):
-            parts.append('meta')
+            result.append('meta')
 
         crop_dims = self._get_crop_dims(options)
         if any(x > 0 for x in crop_dims):
-            parts.append("%dx%d:%dx%d" % tuple(crop_dims))
+            result.append("%dx%d:%dx%d" % tuple(crop_dims))
 
         for opt in self.FIT_OPTS:
             if options.get(opt, False):
-                parts.append(opt.replace('_', '-'))
+                result.append(opt.replace('_', '-'))
 
         image_dims = self._get_image_dims(options)
         if any(image_dims):
-            parts.append('x'.join(image_dims))
+            result.append('x'.join(image_dims))
 
         halign = options.get('halign', False)
         if halign and halign != 'center':
-            parts.append(halign)
+            result.append(halign)
 
         valign = options.get('valign', False)
         if valign and valign != 'middle':
-            parts.append(valign)
+            result.append(valign)
 
         if options.get('smart', False):
-            parts.append('smart')
+            result.append('smart')
 
         filters = options.get('filters', False)
         if filters:
-            parts.append('filters:' + ':'.join(filters))
+            result.append('filters:' + ':'.join(filters))
 
-        return parts
+        return result
 
     def _get_image_dims(self, options):
         w, h = options.get('width', None), options.get('height', None)
