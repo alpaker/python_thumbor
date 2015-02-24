@@ -33,8 +33,8 @@ class OldClientTest(unittest.TestCase):
         self.client = OldClient(KEY)
 
 def make_fn(opts, expected):
-    def f(self):
-        actual = self.client.uri(**opts)
+    def fn(self):
+        actual = self.client.uri(IMAGE_URI, **opts)
         self.assertEquals(expected, actual)
     return f
 
