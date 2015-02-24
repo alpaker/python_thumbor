@@ -36,7 +36,7 @@ class Client(object):
     def _base64_safe(self, s):
         return b64encode(s).replace('+', '-').replace('/', '_').replace('\n', '')
 
-    def _options_to_path_components(self, options):
+    def _serialize_options(self, options):
         parts = list()
 
         trim = options.get('trim', False)
@@ -147,7 +147,7 @@ class Client(object):
 
     def uri(self, image, **options):
         self._validate_options(options)
-        components = self._options_to_path_components(options)
+        components = self._serialize_options(options)
         components.append(image)
         path = '/'.join(components)
         if self._key is None:
@@ -166,7 +166,7 @@ class OldClient(Client):
 
     def uri(self, image, **options):
         self._validate_options(options)
-        components = self._options_to_path_components(options)
+        components = self._serialize_options(options)
         hasher = hashlib.md5()
         hasher.update(image)
         components.append(hasher.hexdigest())
