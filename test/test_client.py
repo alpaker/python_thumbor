@@ -37,10 +37,9 @@ def make_fn(opts, expected):
 
 for k,v in TEST_DATA.items():
     name = "test_%s" % k
-    expected_new, expected_old = v['new'], v['old']
     opts = v['opts']
-    setattr(ClientTest, name, make_fn(opts, expected_new))
-    setattr(OldClientTest, name, make_fn(opts, expected_old))
+    setattr(ClientTest, name, make_fn(opts, v['new']))
+    setattr(OldClientTest, name, make_fn(opts, v['old']))
 
 if __name__ == "__main__":
 
