@@ -172,7 +172,7 @@ class OldClient(Client):
         components = self._options_to_path_components(options)
         hasher = hashlib.md5()
         hasher.update(options['image'])
-        components.append(hasher.digest())
+        components.append(hasher.hexdigest())
         path = '/'.join(components)
         padded_path = path + ("{" * (16 - len(path) % 16))
         cyphertext = self._encryptor.encrypt(padded_path)
