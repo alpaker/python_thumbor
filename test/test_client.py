@@ -36,10 +36,10 @@ def make_fn(opts, expected):
     return fn
 
 for (testcase, data) in TEST_DATA.items():
-    fname = "test_%s" % testcase
+    name = "test_%s" % testcase
     opts = data['opts']
-    setattr(ClientTest, fname, make_fn(opts, data['new']))
-    setattr(OldClientTest, fname, make_fn(opts, data['old']))
+    setattr(ClientTest, name, make_fn(opts, data['new']))
+    setattr(OldClientTest, name, make_fn(opts, data['old']))
 
 if __name__ == "__main__":
 

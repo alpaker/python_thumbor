@@ -147,16 +147,14 @@ class Client(object):
 
     def uri(self, image, **options):
         self._validate_options(options)
-        components = self._serialize_options(options)
-        components.append(image)
+        components = self._serialize_options(options) + [image]
         path = '/'.join(components)
         if self._key is None:
             signature = "unsafe"
         else:
             hashed_path = hmac.new(self._key, path, hashlib.sha1).digest()
             signature = self._base64_safe(hashed_path)
-        components = [signature] + components
-        return '/' + '/'.join(components)
+        return '/%s/%s' % (signature, path)
 
 class OldClient(Client):
 
@@ -166,13 +164,11 @@ class OldClient(Client):
 
     def uri(self, image, **options):
         self._validate_options(options)
-        components = self._serialize_options(options)
         hasher = hashlib.md5()
         hasher.update(image)
-        components.append(hasher.hexdigest())
+        components = self._serialize_options(options) + [hasher.hexdigest()]
         path = '/'.join(components)
-        padded_path = path + ("{" * (16 - len(path) % 16))
-        cyphertext = self._encryptor.encrypt(padded_path)
-        b64 = self._base64_safe(cyphertext)
-        components = [b64, image]
-        return '/' + '/'.join(components)
+        padded = path + ("{" * (16 - len(path) % 16))
+        cyphertext = self._encryptor.encrypt(padded)
+        return '/%s/%s' % (self._base64_safe(cyphertext), image)
+
